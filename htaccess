@@ -1,0 +1,12 @@
+# Enable the rewrite engine
+RewriteEngine On
+
+# Rule to rewrite requests to .html if the file exists
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [NC,L]
+
+# Rule to remove 'index' from the URL
+RewriteCond %{THE_REQUEST} /index(\.html)? [NC]
+RewriteRule ^(.*)index(\.html)?$ /$1 [R=301,NC,L]
+
