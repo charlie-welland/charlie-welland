@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Charlie Welland</title>
+  <link rel="icon" href="images/tree.ico">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "Times New Roman", serif;
+      background-color: #fff;
+      overflow-x: hidden;
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    img.logo, .text {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1.5s ease-in-out forwards;
+    }
+
+    img.logo {
+      max-height: 180px;
+      margin-right: 47px;
+    }
+
+    .text {
+      font-size: 100px;
+      letter-spacing: 8px;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulseOpacity {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.15; }
+    }
+
+    @keyframes bounceUpDown {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -8px); }
+    }
+
+    /* Enhanced scroll cue with smooth slide-in animation */
+    .scroll-cue {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: pulseOpacity 2s infinite, bounceUpDown 1.8s infinite;
+      transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                  visibility 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+      opacity: 1;
+      visibility: visible;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .scroll-cue.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .scroll-bar {
+      width: 40px;
+      height: 5px;
+      background-color: black;
+      border-radius: 3px;
+      transform-origin: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .scroll-cue.hidden .scroll-bar {
+      transform: scaleX(0);
+    }
+
+    .tree-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      background-color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 1000;
+    }
+
+    .tree-header.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .bar-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .tree-header img {
+      height: 40px;
+      margin-right: 16px;
+    }
+
+    .bar-text {
+      font-size: 22px;
+      letter-spacing: 6px;
+    }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .project {
+      position: relative;
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+
+    .project img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #545860;
+      font-size: 32px;
+      font-weight: bold;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+    }
+
+    .project:hover img {
+      opacity: 1;
+    }
+
+    .project:hover .overlay-text {
+      opacity: 1;
+    }
+
+    .spacer {
+      height: 40px;
+    }
+
+    .content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px 100px;
+    }
+
+    .about-header {
+      margin-bottom: 0px;
+      text-align: center;
+      position: relative;
+    }
+
+    .about-header.fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .about-header.fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .about-title {
+      font-size: 28px;
+      font-weight: normal;
+      letter-spacing: 4px;
+      margin: 0;
+      font-family: "Times New Roman", serif;
+      position: relative;
+      display: inline-block;
+    }
+
+    .about-title::before,
+    .about-title::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      height: 2px;
+      background-color: black;
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition-delay: 0.3s;
+    }
+
+    .about-title::before {
+      right: 100%;
+      margin-right: 20px;
+    }
+
+    .about-title::after {
+      left: 100%;
+      margin-left: 20px;
+    }
+
+    .about-header.lines-visible .about-title::before,
+    .about-header.lines-visible .about-title::after {
+      width: 80px;
+    }
+
+    #typed-text {
+      width: 100%;
+    }
+
+    #text-wrapper {
+      font-size: 24px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      animation: blink 0.7s infinite;
+    }
+
+    .cursor.hidden {
+      display: none;
+    }
+
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="tree-header" id="top-bar">
+    <div class="bar-container">
+      <a href="personal.html"><img src="images/tree.png" alt="Tree Logo"></a>
+      <div class="bar-text">WELLAND</div>
+    </div>
+  </div>
+
+  <div class="hero" id="hero">
+    <div class="container">
+      <img class="logo" src="images/tree.png" alt="Tree Image">
+      <div class="text" id="welland-text">WELLAND</div>
+    </div>
+    <div class="scroll-cue" id="scroll-cue">
+      <div class="scroll-bar"></div>
+    </div>
+  </div>
+
+  <div class="main-content" id="project-section">
+    <div class="project">
+      <img src="images/lamp.jpg" alt="Project Image">
+    </div>
+    <div class="project">
+      <img src="images/dontmess.jpg" alt="Project Image">
+    </div>
+    <div class="project">
+      <img src="images/desk.jpg" alt="Project Image">
+    </div>
+    <div class="project">
+      <img src="images/rack.png" alt="Project Image">
+    </div>
+    <div class="project">
+      <img src="images/niche.jpg" alt="Project Image">
+    </div>
+    <div class="project">
+      <img src="images/shelf.jpg" alt="Project Image">
+    </div>
+    <div class="project">
+      <img src="images/martini.jpg" alt="Project Image">
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="content">
+    <div class="about-header fade-in">
+      <h2 class="about-title">ABOUT</h2>
+      <div class="about-underline"></div>
+    </div>
+    <div id="typed-text">
+      <div id="text-wrapper">
+        <span id="text"></span><span id="cursor" class="cursor">|</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const content = `Charlie Welland is a multidisciplinary engineer currently pursuing an M.S. in Mechanical Engineering and a B.S. in Electrical and Computer Engineering at USC. He has contributed to hardware design teams at Apple, NASA's Jet Propulsion Laboratory, and Santec Corporation in Japan. Charlie also served as a Studio Assistant to filmmaker Van Neistat, where punctuality and obsessive attention to detail were demanded.
+
+Born in Austin, Texas, Charlie is the son of Isabel and Dave Welland and the brother of Maggie Welland.
+
+Charlie is a dedicated designer and craftsman—driven by a deep obsession with detail across industrial design, art, and engineering. His work is marked by a relentless work ethic and rigor, along with a passion for crafting for function, grace, and purpose. He brings strong leadership and a uniquely cross-disciplinary approach to his trade.`;
+
+    const textEl = document.getElementById("text");
+    const cursorEl = document.getElementById("cursor");
+    const wellandText = document.getElementById("welland-text");
+    const topBar = document.getElementById("top-bar");
+    const scrollCue = document.getElementById("scroll-cue");
+    const typedText = document.getElementById("typed-text");
+    const aboutHeader = document.querySelector(".about-header");
+
+    let i = 0;
+    let hasTyped = false;
+    let autoScrollEnabled = true;
+    let lastScrollY = window.scrollY;
+
+    function typeChar() {
+      if (i < content.length) {
+        textEl.textContent += content.charAt(i);
+        i++;
+        if (autoScrollEnabled) {
+          window.scrollBy({ top: 22, behavior: 'smooth' });
+        }
+        setTimeout(typeChar, 18);
+      } else {
+        cursorEl.classList.add("hidden");
+      }
+    }
+
+    window.addEventListener("scroll", () => {
+      const trigger = wellandText.getBoundingClientRect().bottom <= 0;
+
+      if (trigger) {
+        topBar.classList.add("visible");
+        scrollCue.classList.add("hidden");
+      } else {
+        topBar.classList.remove("visible");
+        scrollCue.classList.remove("hidden");
+      }
+
+      const scrollDelta = window.scrollY - lastScrollY;
+      if (scrollDelta < -10) {
+        autoScrollEnabled = false;
+      }
+
+      lastScrollY = window.scrollY;
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !hasTyped) {
+          hasTyped = true;
+          typeChar();
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const aboutObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          aboutHeader.classList.add("visible");
+          aboutHeader.classList.add("lines-visible");
+        } else {
+          aboutHeader.classList.remove("lines-visible");
+        }
+      });
+    }, { threshold: 0.3 });
+
+    observer.observe(typedText);
+    aboutObserver.observe(aboutHeader);
+  </script>
+</body>
+</html>
